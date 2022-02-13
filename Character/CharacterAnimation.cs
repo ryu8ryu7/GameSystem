@@ -88,7 +88,7 @@ public partial class CharacterBase
     /// </summary>
     [SerializeField]
     private static Dictionary<int, AnimationSetScriptableObject> _animationSetDataDict = new Dictionary<int, AnimationSetScriptableObject>();
-    public Dictionary<int, AnimationSetScriptableObject> AnimationSetDataDict { get { return _animationSetDataDict; } }
+    public static Dictionary<int, AnimationSetScriptableObject> AnimationSetDataDict { get { return _animationSetDataDict; } }
 
     public class AnimationCommand
     {
@@ -176,6 +176,7 @@ public partial class CharacterBase
         return animationSetData;
     }
 
+    
     /// <summary>
     /// アニメーションの再生
     /// </summary>
@@ -213,6 +214,22 @@ public partial class CharacterBase
 
 
         PlayAnimation(animationSet, nextAnimationSet, lerpTime, isForce);
+    }
+    
+    /// <summary>
+    /// アニメーションの再生
+    /// </summary>
+    /// <param name="animationSet"></param>
+    /// <param name="nextAnimationSet"></param>
+    /// <param name="lerpTime"></param>
+    public void PlayAnimation(AnimationSetScriptableObject.AnimationSetNameLabel animationSetNameLabel, AnimationSetScriptableObject.AnimationSetNameLabel nextAnimationSetNameLabel = AnimationSetScriptableObject.AnimationSetNameLabel.None, float lerpTime = -1.0f, bool isForce = false, Action onEndAction = null)
+    {
+        PlayAnimation(
+            _animationSetScriptableObject.Get(animationSetNameLabel),
+            nextAnimationSetNameLabel == AnimationSetScriptableObject.AnimationSetNameLabel.None ? null : _animationSetScriptableObject.Get(nextAnimationSetNameLabel),
+            lerpTime,
+            isForce,
+            onEndAction);
     }
 
     /// <summary>
@@ -450,36 +467,47 @@ public partial class CharacterBase
             {
                 if (_animationClipPlayableArray[i].IsValid())
                 {
-                    _animationTimeArray[i] += Time.deltaTime;
+                    _animationTimeArray[i] += Utility.GetGameTime();
                     _animationClipPlayableArray[i].SetTime(_animationTimeArray[i]);
                 }
             }
         }
 
-        if (_nextAnimationSet != null)
-        {
-            AnimationSet.ClipSet currentClipSet = _currentAnimationSet.ClipSetArray[(int)_clipIndex];
 
+        AnimationSet.ClipSet currentClipSet = _currentAnimationSet.ClipSetArray[(int)_clipIndex];
+        int animationIndex = GetCurrentAnimationIndex(0);
+        if (currentClipSet.IsLoopMotion == false)
+        {
+            // Loopアニメではない場合
             // アニメーション再生終了していた場合
-            if (_animationClipPlayableArray[GetCurrentAnimationIndex(0)].GetTime() >= currentClipSet.AnimationClip.length - _animationLerpTime)
+            if (_animationClipPlayableArray[animationIndex].GetTime() >= currentClipSet.AnimationClip.length - _animationLerpTime)
             {
-                // Loopアニメではない場合
-                if (_animationClipPlayableArray[GetCurrentAnimationIndex(0)].GetAnimationClip().isLooping == false )
+                if (_currentAnimationSet.ClipSetArray.Length <= _clipIndex + 1)
                 {
-                    if (_currentAnimationSet.ClipSetArray.Length <= _clipIndex + 1 )
+                    _onEndAnimation?.Invoke();
+
+                    // 最後のアニメかつ、Loopアニメじゃないときは次のSetに移動
+                    if (_nextAnimationSet != null)
                     {
-                        // 最後のアニメかつ、Loopアニメじゃないときは次のSetに移動
-                        _onEndAnimation?.Invoke();
                         PlayAnimation(_nextAnimationSet);
                         _nextAnimationSet = null;
                     }
-                    else
-                    {
-                        // まだ次があるので進める
-                        _clipIndex++;
-                        PlayAnimation(_currentAnimationSet.ClipSetArray[(int)_clipIndex].LerpTime);
-                    }
                 }
+                else
+                {
+                    // まだ次があるので進める
+                    _clipIndex++;
+                    PlayAnimation(_currentAnimationSet.ClipSetArray[(int)_clipIndex].LerpTime);
+                }
+            }
+        }
+        else
+        {
+            // Loopアニメの場合
+            if (_animationClipPlayableArray[animationIndex].GetTime() >= currentClipSet.AnimationClip.length)
+            {
+                _animationTimeArray[animationIndex] -= currentClipSet.AnimationClip.length;
+                _animationClipPlayableArray[animationIndex].SetTime(_animationTimeArray[animationIndex]);
             }
         }
     }
@@ -528,6 +556,13 @@ public partial class CharacterBase
         AnimationCommand command = _freeMoveAnimationCommandDict[commandName];
         PlayAnimation(command.AnimationSetData, command.AnimationName);
     }
+
+    private void OnAnimatorMove()
+    {
+        transform.localPosition += _animator.deltaPosition;
+        transform.localRotation = _animator.deltaRotation * transform.localRotation;
+    }
+
 
     #endregion Animation
 

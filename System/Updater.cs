@@ -13,4 +13,8 @@ public class Updater : MonoBehaviour
     public virtual void PreAlterUpdate() { }
 
     public virtual void AlterUpdate() { }
+
+    public virtual void PreAlterLateUpdate() { }
+
+    public virtual void AlterLateUpdate() { }
 }

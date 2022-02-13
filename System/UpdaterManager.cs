@@ -47,6 +47,8 @@ public class UpdaterManager : Singleton<UpdaterManager>
 
     public void Update()
     {
+        Utility.Update();
+
         for( int i = 0, count = _updaterList.Count; i < count; i++ )
         {
             _updaterList[i].PreAlterUpdate();
@@ -55,6 +57,19 @@ public class UpdaterManager : Singleton<UpdaterManager>
         for (int i = 0, count = _updaterList.Count; i < count; i++)
         {
             _updaterList[i].AlterUpdate();
+        }
+    }
+
+    public void LateUpdate()
+    {
+        for (int i = 0, count = _updaterList.Count; i < count; i++)
+        {
+            _updaterList[i].PreAlterLateUpdate();
+        }
+
+        for (int i = 0, count = _updaterList.Count; i < count; i++)
+        {
+            _updaterList[i].AlterLateUpdate();
         }
     }
 }

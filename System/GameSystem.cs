@@ -20,6 +20,7 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
     /// <summary>
     /// インスタンス生成
     /// </summary>
+    [RuntimeInitializeOnLoadMethod]
     public static void CreateInstance()
     {
         if (HasInstance() == true)
@@ -57,5 +58,10 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
     private void Update()
     {
         UpdaterManager.Instance.Update();
+    }
+
+    private void LateUpdate()
+    {
+        UpdaterManager.Instance.LateUpdate();
     }
 }

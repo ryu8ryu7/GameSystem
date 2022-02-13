@@ -37,6 +37,10 @@ public partial class CharacterBase
         WeaponR02,
         WeaponR03,
 
+        // 捜索が行われるのはここまで--------------------------------------
+
+        UnKnown,
+
         Max
     }
 
@@ -49,7 +53,14 @@ public partial class CharacterBase
 
         for (int i = 0; i < (int)PositionObjName.Max; i++)
         {
-            obj = gameObject.FindDeep(((PositionObjName)i).ToString(), true);
+            PositionObjName name = (PositionObjName)i;
+
+            if( name >= PositionObjName.UnKnown )
+            {
+                break;
+            }
+
+            obj = gameObject.FindDeep(name.ToString(), true);
             if (obj != null)
             {
                 _positionList.Add(obj.transform);
@@ -64,5 +75,21 @@ public partial class CharacterBase
     protected virtual Transform GetPosition(PositionObjName positionObjName)
     {
         return _positionList[(int)positionObjName];
+    }
+
+    /// <summary>
+    /// ポジション検索（どこのものか）
+    /// </summary>
+    /// <param name="checkTransform"></param>
+    /// <returns></returns>
+    protected PositionObjName GetPosition( Transform checkTransform ) 
+    {
+        int index = _positionList.IndexOf(checkTransform);
+        if( index < 0 )
+        {
+            return PositionObjName.UnKnown;
+        }
+
+        return (PositionObjName)index;
     }
 }

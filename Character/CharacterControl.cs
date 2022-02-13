@@ -55,7 +55,7 @@ public partial class CharacterBase
     protected virtual void PreUpdateControl()
     {
         _direction.x = 0;
-        _direction.y = -0.1f;
+        _direction.y = 0f;
         _direction.z = 0;
 
     }
@@ -224,8 +224,6 @@ public partial class CharacterBase
         PlayAnimation(_animationSetScriptableObject.Get(AnimationSetScriptableObject.AnimationSetNameLabel.Run01));
 
     }
-
-
 
     protected void UpdateMove()
     {
