@@ -45,6 +45,19 @@ public class UpdaterManager : Singleton<UpdaterManager>
         _updaterList.Sort((a, b) => { return a.UpdatePriority - b.UpdatePriority; });
     }
 
+    public void FixedUpdate()
+    {
+        for (int i = 0, count = _updaterList.Count; i < count; i++)
+        {
+            _updaterList[i].PreAlterFixedUpdate();
+        }
+
+        for (int i = 0, count = _updaterList.Count; i < count; i++)
+        {
+            _updaterList[i].AlterFixedUpdate();
+        }
+    }
+
     public void Update()
     {
         Utility.Update();

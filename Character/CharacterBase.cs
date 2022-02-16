@@ -56,8 +56,6 @@ public partial class CharacterBase : Updater
     public override void PreAlterUpdate()
     {
         base.PreAlterUpdate();
-
-        PreUpdateControl();
     }
 
     /// <summary>

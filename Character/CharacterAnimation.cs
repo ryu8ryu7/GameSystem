@@ -559,8 +559,10 @@ public partial class CharacterBase
 
     private void OnAnimatorMove()
     {
-        transform.localPosition += _animator.deltaPosition;
-        transform.localRotation = _animator.deltaRotation * transform.localRotation;
+        ResetDirection();
+
+        _direction = _animator.deltaPosition;
+        _directionAng = _animator.deltaRotation.eulerAngles;
     }
 
 

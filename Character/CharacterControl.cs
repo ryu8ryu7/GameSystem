@@ -21,6 +21,10 @@ public partial class CharacterBase
 
     protected Vector3 _direction = Vector3.zero;
 
+    protected Vector3 _directionAng = Vector3.zero;
+
+    protected bool _isResetDirection = false;
+
     [SerializeField]
     protected float _moveSpeed = 0.1f;
 
@@ -52,12 +56,12 @@ public partial class CharacterBase
         _cameraLookDown = cameraLookDown;
     }
 
-    protected virtual void PreUpdateControl()
+    protected virtual void ResetDirection()
     {
         _direction.x = 0;
         _direction.y = 0f;
         _direction.z = 0;
-
+        _directionAng = Vector3.zero;
     }
 
     protected virtual void UpdateInput()
@@ -228,6 +232,12 @@ public partial class CharacterBase
     protected void UpdateMove()
     {
         _characterController.Move(_direction);
+        transform.localRotation = Quaternion.Euler(_directionAng) * transform.localRotation; 
+    }
+
+    protected void LateUpdateMove()
+    {
+        _isResetDirection = false;
     }
 
 #if UNITY_EDITOR

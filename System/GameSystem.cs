@@ -55,6 +55,11 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
         _isInitialized = true;
     }
 
+    private void FixedUpdate()
+    {
+        UpdaterManager.Instance.FixedUpdate();
+    }
+
     private void Update()
     {
         UpdaterManager.Instance.Update();

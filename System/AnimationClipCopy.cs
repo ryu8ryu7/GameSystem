@@ -12,38 +12,56 @@ public class Copy
 			.GetFiltered<UnityEngine.Object>(SelectionMode.Assets | SelectionMode.DeepAssets)
 			.Select(x => AssetDatabase.GetAssetPath(x))
 			.SelectMany(x => AssetDatabase.GetDependencies(x))
-			.Where(x => x.EndsWith(".FBX"))
+			.Where(x => x.EndsWith(".FBX") || x.EndsWith(".fbx") )
 			.Distinct()
 			.OrderBy(x => x)
 			.ToArray()
 			;
 
+		for (int i = 0; i < list.Length; i++)
+		{
+			AnimationClipCopy(list[i]);
+		}
+	}
 
-		return;
-		// AnimationClipを持つFBXのパス
-		string fbxPath = "Assets/UnityChan/SD_unitychan/Animations/SD_unitychan_motion_Generic.fbx";
-		// AnimationClipのファイル名
-		string clipName = "GoDown";
+	private static void AnimationClipCopy( string fbxPath )
+	{ 
 		// AnimationClipの出力先
-		string exportPath = "Assets/Clone.anim";
+		string exportPath = "";
 
 		string tempExportedClip = "Assets/tempClip.anim";
 
 		// AnimationClipの取得
 		var animations = AssetDatabase.LoadAllAssetsAtPath(fbxPath);
-		var originalClip = System.Array.Find<Object>(animations, item =>
-			  item is AnimationClip && item.name == clipName
-		);
+        var originalClipArray = System.Array.FindAll<Object>(animations, item =>
+              item is AnimationClip && !item.name.StartsWith("__preview")
+        );
 
-		// AnimationClipをコピーして出力(ユニークなuuid)
-		var copyClip = Object.Instantiate(originalClip);
-		AssetDatabase.CreateAsset(copyClip, tempExportedClip);
+		string basePath = System.IO.Path.GetFileNameWithoutExtension(fbxPath);
+		string folderPath = System.IO.Path.GetDirectoryName(fbxPath);
 
-		// AnimationClipのコピー（固定化したuuid）
-		File.Copy(tempExportedClip, exportPath, true);
-		File.Delete(tempExportedClip);
+		foreach (var originalClip in originalClipArray)
+		{
+			exportPath = folderPath + "/";
+			string fileName = basePath;
+			if( originalClip.name != "Take 001" )
+            {
+				fileName += "_" + originalClip.name;
+            }
+			fileName += ".anim";
 
-		// AssetDatabaseリフレッシュ
-		AssetDatabase.Refresh();
+			exportPath += fileName;
+			tempExportedClip = "Assets/" + fileName;
+
+			// AnimationClipをコピーして出力(ユニークなuuid)
+			var copyClip = Object.Instantiate(originalClip);
+            AssetDatabase.CreateAsset(copyClip, tempExportedClip);
+
+            // AnimationClipのコピー（固定化したuuid）
+            File.Copy(tempExportedClip, exportPath, true);
+			File.Delete(tempExportedClip);
+
+			AssetDatabase.ImportAsset(exportPath);
+		}
 	}
 }
