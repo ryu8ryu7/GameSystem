@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 
 public partial class CharacterBase
 {
@@ -567,5 +571,35 @@ public partial class CharacterBase
 
 
     #endregion Animation
+
+#if UNITY_EDITOR
+
+    public partial class CharacterBaseEditor : Editor
+    {
+        private bool _isFoldAnimation = false;
+        protected void OnInspectorAnimation()
+        {
+            CharacterBase chara = target as CharacterBase;
+
+            if (_isFoldAnimation = EditorGUILayout.Foldout(_isFoldAnimation, "Animation"))
+            {
+                EditorGUI.indentLevel += 1;
+
+                EditorGUILayout.ObjectField("AnimationSet", chara._animationSetScriptableObject, typeof( AnimationSetScriptableObject ), false);
+                if (chara._currentAnimationSet == null)
+                {
+                    EditorGUILayout.LabelField("Label None");
+                }
+                else
+                {
+                    EditorGUILayout.LabelField(string.Format( "Label {0}", chara._currentAnimationSet.Label ) );
+                }
+
+                EditorGUI.indentLevel -= 1;
+            }
+        }
+
+    }
+#endif
 
 }

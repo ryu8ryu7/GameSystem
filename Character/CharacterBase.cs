@@ -89,6 +89,7 @@ public partial class CharacterBase : Updater
             CharacterBase chara = target as CharacterBase;
             OnInspectorBase();
             OnInspectorControl();
+            OnInspectorAnimation();
             OnInspectorIkController();
             OnInspectorAttachment();
             EditorUtility.SetDirty(chara);
