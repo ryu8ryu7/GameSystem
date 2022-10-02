@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 public static class Utility
@@ -8,13 +11,15 @@ public static class Utility
     {
         Noraml,
 
+        Sub01,
+
         Max
     }
 
     public static readonly Vector2 VECTOR2_ZERO = Vector2.zero;
     public static readonly Vector3 VECTOR3_ZERO = Vector3.zero;
     private static float[] _gameTimeArray = new float[(int)GameTimeIndex.Max];
-    private static float[] _gameSpeedArray = new float[(int)GameTimeIndex.Max] { 1.0f };
+    private static float[] _gameSpeedArray = new float[(int)GameTimeIndex.Max] { 1.0f, 1.0f };
 
 
     public enum LayerName
@@ -163,4 +168,14 @@ public static class Utility
             _gameTimeArray[i] = _gameSpeedArray[i] * time;
         }
     }
+
+#if UNITY_EDITOR
+    public static void OnInspectorGUI()
+    {
+        for (int i = 0; i < _gameSpeedArray.Length; i++)
+        {
+            _gameSpeedArray[i] = EditorGUILayout.FloatField( string.Format( "GameSpeed:{0}", (GameTimeIndex)i), _gameSpeedArray[i]);
+        }
+    }
+#endif
 }

@@ -13,8 +13,14 @@ public partial class CharacterBase : Updater
     private CameraLookDown _cameraLookDown = null;
     public CameraLookDown CameraLookDown { set { _cameraLookDown = value; } }
 
+    /// <summary>
+    /// AwakeÇ≈èâä˙âª
+    /// </summary>
     [SerializeField]
     private bool _isAwakeInitialize = false;
+
+    [SerializeField]
+    private int _animationSetIndex = -1;
 
     private void Start()
     {
@@ -34,7 +40,8 @@ public partial class CharacterBase : Updater
         InitializeAttachment();
         InitializeAnimation();
 
-        LoadAnimation(LoadAnimationSetData(10001));
+        int setIndex = _animationSetIndex < 0 ? 10001 : _animationSetIndex;
+        LoadAnimation(LoadAnimationSetData(setIndex));
         PlayAnimation(_animationSetScriptableObject.Get(AnimationSetScriptableObject.AnimationSetNameLabel.Idle01));
 
         _updatePriority = (int)UpdaterManager.Priority.Character;
@@ -103,6 +110,7 @@ public partial class CharacterBase : Updater
             if (_isFoldBase = EditorGUILayout.Foldout(_isFoldBase, "Base"))
             {
                 chara._isAwakeInitialize = EditorGUILayout.Toggle("_isAwakeInitialize", chara._isAwakeInitialize);
+                chara._animationSetIndex = EditorGUILayout.IntField("_animationSetIndex", chara._animationSetIndex);
             }
         }
     }

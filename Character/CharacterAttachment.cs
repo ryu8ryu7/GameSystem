@@ -62,6 +62,23 @@ public partial class CharacterBase
                 obj.name = obj.name.Replace("(Clone)", string.Empty);
             }
         }
+
+        obj = gameObject.FindDeep("WeaponLAttach", true);
+        if (obj != null)
+        {
+            GameObject.DestroyImmediate(obj);
+            obj = null;
+        }
+        if (obj == null)
+        {
+            GameObject parent = gameObject.FindDeep(PositionObjName.Hand_L.ToString(), true);
+            if (parent != null)
+            {
+                obj = ResourceManager.LoadOnView<GameObject>("3D/Character/Attachment/WeaponLAttach");
+                obj = GameObject.Instantiate(obj, parent.transform);
+                obj.name = obj.name.Replace("(Clone)", string.Empty);
+            }
+        }
     }
 
     /// <summary>

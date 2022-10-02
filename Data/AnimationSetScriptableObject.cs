@@ -26,6 +26,7 @@ public class AnimationSet
         public bool IsRightIK = false;
         public int RightIKIndex = 1;
         public bool IsSameAnime = false;
+        public float Speed = 1;
         public float LerpTime = 0.1f;
     }
 

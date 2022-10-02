@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 /// <summary>
@@ -30,6 +33,8 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
 
         _instance = new GameObject("GameSystem").AddComponent<GameSystem>();
         _instance.Initialize();
+
+        DontDestroyOnLoad(_instance.gameObject);
     }
 
     private void Awake()
@@ -47,7 +52,11 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
         UpdaterManager.CreateInstance();
         ResourceManager.CreateInstance();
         MasterDataManager.CreateInstance();
+        ClothManager.CreateInstance();
+
+
         MasterDataManager.Instance.LoadMaster();
+        ClothManager.Instance.Initialize();
 
         Application.targetFrameRate = FRAME_RATE;
         Screen.SetResolution(1920, 1080, true);
@@ -69,4 +78,21 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
     {
         UpdaterManager.Instance.LateUpdate();
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GameSystem))]
+    public partial class GameSystemEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            GameSystem gameSystem = target as GameSystem;
+
+            Utility.OnInspectorGUI();
+
+            EditorUtility.SetDirty(gameSystem);
+        }
+
+    }
+
+#endif
 }

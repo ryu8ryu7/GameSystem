@@ -114,7 +114,17 @@ public partial class CharacterBase
     private Action _onMotionHitEvent = null;
     public Action OnMotionHitEvent { set { _onMotionHitEvent = value; } }
 
-    #region Animation 
+    /// <summary>
+    /// ルートアニメ
+    /// </summary>
+    [SerializeField]
+    private bool _isApplyRootMotion_position = true;
+
+    /// <summary>
+    /// ルートアニメ
+    /// </summary>
+    [SerializeField]
+    private bool _isApplyRootMotion_rotation = true;
 
     /// <summary>
     /// アニメーション関係初期化
@@ -431,9 +441,12 @@ public partial class CharacterBase
             return;
         }
 
+        AnimationSet.ClipSet currentClipSet = _currentAnimationSet.ClipSetArray[(int)_clipIndex];
+        float pastTime = Utility.GetGameTime() * currentClipSet.Speed;
+
         if (_animationLerpTime > 0.0f)
         {
-            _animationCurrntLerpTime += Utility.GetGameTime();
+            _animationCurrntLerpTime += pastTime;
             if (_animationCurrntLerpTime > _animationLerpTime)
             {
                 _animationWeight = 1.0f;
@@ -471,14 +484,13 @@ public partial class CharacterBase
             {
                 if (_animationClipPlayableArray[i].IsValid())
                 {
-                    _animationTimeArray[i] += Utility.GetGameTime();
+                    _animationTimeArray[i] += pastTime;
                     _animationClipPlayableArray[i].SetTime(_animationTimeArray[i]);
                 }
             }
         }
 
 
-        AnimationSet.ClipSet currentClipSet = _currentAnimationSet.ClipSetArray[(int)_clipIndex];
         int animationIndex = GetCurrentAnimationIndex(0);
         if (currentClipSet.IsLoopMotion == false)
         {
@@ -561,16 +573,19 @@ public partial class CharacterBase
         PlayAnimation(command.AnimationSetData, command.AnimationName);
     }
 
+    /// <summary>
+    /// アニメータ実行イベント
+    /// </summary>
     private void OnAnimatorMove()
     {
         ResetDirection();
 
-        _direction = _animator.deltaPosition;
-        _directionAng = _animator.deltaRotation.eulerAngles;
+        if( _isApplyRootMotion_position )
+            _direction = _animator.deltaPosition;
+
+        if( _isApplyRootMotion_rotation )
+            _directionAng = _animator.deltaRotation.eulerAngles;
     }
-
-
-    #endregion Animation
 
 #if UNITY_EDITOR
 
@@ -594,6 +609,9 @@ public partial class CharacterBase
                 {
                     EditorGUILayout.LabelField(string.Format( "Label {0}", chara._currentAnimationSet.Label ) );
                 }
+
+                chara._isApplyRootMotion_position = EditorGUILayout.Toggle("RootAnime:Pos:", chara._isApplyRootMotion_position);
+                chara._isApplyRootMotion_rotation = EditorGUILayout.Toggle("RootAnime:Rot:", chara._isApplyRootMotion_rotation);
 
                 EditorGUI.indentLevel -= 1;
             }
