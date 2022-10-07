@@ -8,7 +8,7 @@ public class BootScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SceneManager.LoadScene("LocalMap");
+        ViewManager.Instance.ChangeView(ViewManager.ViewId.LocalMapView);
     }
 
     // Update is called once per frame

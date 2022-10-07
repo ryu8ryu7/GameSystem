@@ -49,6 +49,10 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
             return;
         }
 
+        Application.targetFrameRate = FRAME_RATE;
+        Screen.SetResolution(1920, 1080, true);
+
+        ViewManager.CreateInstance();
         UpdaterManager.CreateInstance();
         ResourceManager.CreateInstance();
         MasterDataManager.CreateInstance();
@@ -61,8 +65,7 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
         CameraManager.Instance.Initialize();
         LightManager.Instance.Initialize();
 
-        Application.targetFrameRate = FRAME_RATE;
-        Screen.SetResolution(1920, 1080, true);
+        UIManager.CreateInstance();
 
         _isInitialized = true;
     }
