@@ -55,18 +55,40 @@ public class CameraLookDown : Updater
         obj.transform.SetParent(parentObj.transform);
         Camera camera = obj.AddComponent<Camera>();
         CameraLookDown cameraLookDown = obj.AddComponent<CameraLookDown>();
-        cameraLookDown.Camera = camera;
+        
         cameraLookDown.Initialize();
 
-        UpdaterManager.Instance.AddUpdater(cameraLookDown);
         return cameraLookDown;
+    }
+
+    public void Awake()
+    {
+        Initialize();
+    }
+
+    public void Start()
+    {
+        
     }
 
     public void Initialize()
     {
+        if (_targetDummy != null)
+            return;
+
+        Camera camera = null;
+        if (gameObject.TryGetComponent<Camera>(out camera) == false)
+            return;
+
+        _camera = camera;
+
         _targetDummy = new GameObject("target");
         _targetDummy.transform.SetParent(transform.parent);
         _updatePriority = (int)UpdaterManager.Priority.Camera;
+
+        SetCharacter(null);
+
+        UpdaterManager.Instance.AddUpdater(this);
     }
 
     public void SetCharacter( CharacterBase character )

@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class BootScene : MonoBehaviour
+public class LocalMapScene : Updater
 {
     // Start is called before the first frame update
     void Start()
     {
-        SceneManager.LoadScene("LocalMap");
+        
     }
 
     // Update is called once per frame

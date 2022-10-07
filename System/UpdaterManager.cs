@@ -49,11 +49,15 @@ public class UpdaterManager : Singleton<UpdaterManager>
     {
         for (int i = 0, count = _updaterList.Count; i < count; i++)
         {
+            if (_updaterList[i].enabled == false)
+                continue;
             _updaterList[i].PreAlterFixedUpdate();
         }
 
         for (int i = 0, count = _updaterList.Count; i < count; i++)
         {
+            if (_updaterList[i].enabled == false)
+                continue;
             _updaterList[i].AlterFixedUpdate();
         }
     }
@@ -64,11 +68,15 @@ public class UpdaterManager : Singleton<UpdaterManager>
 
         for( int i = 0, count = _updaterList.Count; i < count; i++ )
         {
+            if (_updaterList[i].enabled == false)
+                continue;
             _updaterList[i].PreAlterUpdate();
         }
 
         for (int i = 0, count = _updaterList.Count; i < count; i++)
         {
+            if (_updaterList[i].enabled == false)
+                continue;
             _updaterList[i].AlterUpdate();
         }
     }
@@ -77,11 +85,15 @@ public class UpdaterManager : Singleton<UpdaterManager>
     {
         for (int i = 0, count = _updaterList.Count; i < count; i++)
         {
+            if (_updaterList[i].enabled == false)
+                continue;
             _updaterList[i].PreAlterLateUpdate();
         }
 
         for (int i = 0, count = _updaterList.Count; i < count; i++)
         {
+            if (_updaterList[i].enabled == false)
+                continue;
             _updaterList[i].AlterLateUpdate();
         }
     }

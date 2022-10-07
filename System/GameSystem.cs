@@ -53,10 +53,13 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
         ResourceManager.CreateInstance();
         MasterDataManager.CreateInstance();
         ClothManager.CreateInstance();
-
+        CameraManager.CreateInstance();
+        LightManager.CreateInstance();
 
         MasterDataManager.Instance.LoadMaster();
         ClothManager.Instance.Initialize();
+        CameraManager.Instance.Initialize();
+        LightManager.Instance.Initialize();
 
         Application.targetFrameRate = FRAME_RATE;
         Screen.SetResolution(1920, 1080, true);
