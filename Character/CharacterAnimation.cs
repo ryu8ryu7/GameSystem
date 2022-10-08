@@ -164,7 +164,7 @@ public partial class CharacterBase
         AnimationSetScriptableObject animationSetData = null;
         if (_animationSetDataDict.TryGetValue(setId, out animationSetData) == false)
         {
-            string path = string.Format("3D/Character/Animation/AnimationSet{0:D5}", setId);
+            string path = Utility.StringFormat("3D/Character/Animation/AnimationSet{0:D5}", setId);
             animationSetData = ResourceManager.LoadOnView<AnimationSetScriptableObject>(path);
             _animationSetDataDict.Add(setId, animationSetData);
         }

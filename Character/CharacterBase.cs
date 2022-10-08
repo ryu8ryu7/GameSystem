@@ -94,12 +94,19 @@ public partial class CharacterBase : Updater
         public override void OnInspectorGUI()
         {
             CharacterBase chara = target as CharacterBase;
+
+            EditorGUI.BeginChangeCheck();
+
             OnInspectorBase();
             OnInspectorControl();
             OnInspectorAnimation();
             OnInspectorIkController();
             OnInspectorAttachment();
-            EditorUtility.SetDirty(chara);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(chara);
+            }
         }
 
         private bool _isFoldBase = false;

@@ -6,6 +6,12 @@ public class UIManager : SingletonUpdater<UIManager>
 {
     [SerializeField]
     private Canvas _gameCanvas = null;
+    public Canvas GameCanvas { get { return _gameCanvas; } }
+
+
+    [SerializeField]
+    private Canvas _systemCanvas = null;
+    public Canvas SystemCanvas { get { return _systemCanvas; } }
 
     [SerializeField]
     private Camera _camera = null;

@@ -6,13 +6,17 @@ public class CameraManager : Singleton<CameraManager>
 {
     public class CameraSet
     {
-        public Camera _camera = null;
-        public CameraLookDown _lookDown = null;
+        private Camera _camera = null;
+        public Camera Camera { get { return _camera; } }
+
+        private CameraLookDown _lookDown = null;
+        public CameraLookDown LookDown { get { return _lookDown; } }
 
         public void Initialize( string name )
         {
             _camera = new GameObject(name).AddComponent<Camera>();
             _camera.transform.SetParent(GameSystem.Instance.transform);
+            _camera.fieldOfView = 45.0f;
 
             _lookDown = _camera.gameObject.AddComponent<CameraLookDown>();
         }
@@ -20,7 +24,7 @@ public class CameraManager : Singleton<CameraManager>
 
 
     private CameraSet _mainCamera = null;
-
+    public CameraSet MainCamera { get { return _mainCamera; } }
 
 
     /// <summary>

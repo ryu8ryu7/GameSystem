@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,25 +30,24 @@ public class ViewManager : Singleton<ViewManager>
     {
         public SceneId SceneId;
         public ViewId ViewId;
-        public string SceneName;
+        public Type View3DType;
+        public Type ViewControllerType;
     }
 
     private static ViewSet[] _viewSetArray = new ViewSet[(int)ViewId.Max]
     {
-        new ViewSet{ ViewId = ViewId.BootView, SceneId = SceneId.BootScene, SceneName = "Boot"},
-        new ViewSet{ ViewId = ViewId.TitleView, SceneId = SceneId.TitleScene, SceneName = "Title"},
-        new ViewSet{ ViewId = ViewId.LocalMapView, SceneId = SceneId.LocalMapScene, SceneName = "LocalMap"},
+        new ViewSet{ ViewId = ViewId.BootView, SceneId = SceneId.BootScene},
+        new ViewSet{ ViewId = ViewId.TitleView, SceneId = SceneId.TitleScene},
+        new ViewSet{ ViewId = ViewId.LocalMapView, SceneId = SceneId.LocalMapScene, View3DType = typeof(LocalMapView3D), ViewControllerType = typeof( LocalMapViewController) },
     };
 
     private ViewSet _currentViewSet = _viewSetArray[(int)ViewId.BootView];
     public ViewSet CurrentViewSet { get { return _currentViewSet; } }
 
-    private SceneBase _currentScene = null;
-
-    private ViewBase _currentView = null;
+    private ViewControllerBase _currentViewController = null;
 
     /// <summary>
-    /// ÉCÉìÉXÉ^ÉìÉXÇÃê∂ê¨
+    /// „Ç§„É≥„Çπ„Çø„É≥„Çπ„ÅÆÁîüÊàê
     /// </summary>
     public static void CreateInstance()
     {
@@ -60,25 +61,19 @@ public class ViewManager : Singleton<ViewManager>
 
         ViewSet nextViewSet = _viewSetArray[(int)viewId];
 
-        // âÊñ êÿÇËë÷Ç¶âÊñ 
+        // ÁîªÈù¢Âàá„ÇäÊõø„ÅàÁîªÈù¢
 
 
-        // ViewÇÃîjä¸
-        if (_currentView != null)
+        // View„ÅÆÁ†¥Ê£Ñ
+        if (_currentViewController != null)
         {
-            _currentView.DestroyView();
+            _currentViewController.DestroyView();
+            GameObject.DestroyImmediate(_currentViewController.gameObject);
         }
 
         if ( nextViewSet.SceneId != _currentViewSet.SceneId )
         {
-            // ÉVÅ[ÉìêÿÇËë÷Ç¶
-
-            // SceneÇÃîjä¸
-            if( _currentScene != null )
-            {
-                _currentScene.DestroyScene();
-            }
-
+            // „Ç∑„Éº„É≥Âàá„ÇäÊõø„Åà
             GameSystem.Instance.StartCoroutine(ChangeSceneAsync(nextViewSet));
             return;
         }
@@ -88,7 +83,7 @@ public class ViewManager : Singleton<ViewManager>
 
     private IEnumerator ChangeSceneAsync(ViewSet nextViewSet)
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(nextViewSet.SceneName);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(nextViewSet.SceneId.ToString());
 
         while (!asyncLoad.isDone)
         {
@@ -100,8 +95,26 @@ public class ViewManager : Singleton<ViewManager>
 
     private IEnumerator ChangeViewAsync(ViewSet nextViewSet)
     {
+        const string VIEW_PATH = "UI/View/{0}/{1}";
+        GameObject obj = ResourceManager.LoadOnView<GameObject>(Utility.StringFormat( VIEW_PATH, nextViewSet.SceneId, nextViewSet.ViewId ));
+        ViewBase view = GameObject.Instantiate<GameObject>(obj).GetComponent<ViewBase>();
+        view.transform.SetParent(UIManager.Instance.GameCanvas.transform, false);
+
+        obj = new GameObject(Utility.StringFormat("{0}3D", nextViewSet.ViewId));
+        View3DBase view3D = obj.AddComponent(nextViewSet.View3DType) as View3DBase;
+
+        obj = new GameObject(Utility.StringFormat("{0}Controller", nextViewSet.ViewId));
+        _currentViewController = obj.AddComponent(nextViewSet.ViewControllerType) as ViewControllerBase;
+        _currentViewController.ViewBase = view;
+        _currentViewController.View3DBase = view3D;
+
+        _currentViewController.InitializeView();
+
         yield return null;
 
+        _currentViewSet = _viewSetArray[(int)nextViewSet.ViewId];
+
+        // ÁîªÈù¢„ÇíÈñã„Åë„Çã
 
     }
 }

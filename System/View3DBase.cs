@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ViewBase : MonoBehaviour
+public class View3DBase : MonoBehaviour
 {
     public virtual void InitializeView()
     {

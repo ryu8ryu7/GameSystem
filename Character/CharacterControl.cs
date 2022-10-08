@@ -54,6 +54,7 @@ public partial class CharacterBase
     public void SetCameraLookDown( CameraLookDown cameraLookDown )
     {
         _cameraLookDown = cameraLookDown;
+        _isControl = _cameraLookDown == null ? false : true;
     }
 
     protected virtual void ResetDirection()
@@ -106,9 +107,10 @@ public partial class CharacterBase
                 float ang = Utility.GetAngle(_direction) + _cameraLookDown.CameraYaw + 180.0f;
                 float magnitude = _direction.magnitude;
                 _direction.x = Utility.Sin(ang) * _moveSpeed;
+                _direction.y = -0.1f;
                 _direction.z = Utility.Cos(ang) * _moveSpeed;
                 _characterController.transform.localRotation = Quaternion.Euler(0, Utility.GetAngle(_direction), 0);
-                currentLabel = AnimationSetScriptableObject.AnimationSetNameLabel.Run01;
+                currentLabel = AnimationSetScriptableObject.AnimationSetNameLabel.Walk01;
             }
 
             //if( Input.GetKeyDown("joystick button 0") )

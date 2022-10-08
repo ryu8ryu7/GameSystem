@@ -161,7 +161,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: 50
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 32
@@ -300,4 +300,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameCanvas: {fileID: 5462836695625494765}
+  _systemCanvas: {fileID: 0}
   _camera: {fileID: 5462836695722818930}

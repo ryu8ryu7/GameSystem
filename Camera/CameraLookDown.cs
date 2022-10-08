@@ -17,7 +17,7 @@ public class CameraLookDown : Updater
 
     private Transform _targetTransform = null;
 
-    private bool _isTargetCharacter = false;
+    private CharacterBase _targetCharacter = null;
 
     private Vector3 _currentPos = Vector3.zero;
 
@@ -43,10 +43,10 @@ public class CameraLookDown : Updater
     private float _cameraDistance = 10.0f;
 
     [SerializeField]
-    private float _targetDistance = 10.0f;
+    private float _targetDistance = 18.0f;
 
     [SerializeField]
-    private float _cameraDelay = 0.08f;
+    private float _cameraDelay = 0.16f;
 
     public static CameraLookDown CreateCamera()
     {
@@ -95,12 +95,18 @@ public class CameraLookDown : Updater
     {
         if (character != null)
         {
-            _isTargetCharacter = true;
+            _targetCharacter = character;
             _targetTransform = character.transform;
+            character.SetCameraLookDown(this);
         }
         else
         {
-            _isTargetCharacter = false;
+            if (_targetCharacter != null)
+            {
+                _targetCharacter.SetCameraLookDown(null);
+            }
+
+            _targetCharacter = null;
             _targetTransform = _targetDummy.transform;
         }
     }
@@ -109,7 +115,7 @@ public class CameraLookDown : Updater
     {
         _targetPos = _targetTransform.transform.localPosition;
 
-        if( _isTargetCharacter )
+        if(_targetCharacter != null)
         {
             _targetDummy.transform.localPosition = _targetPos;
         }
@@ -142,7 +148,7 @@ public class CameraLookDown : Updater
             _targetYaw -= Utility.GetGameTime() * 96.0f;
         }
 
-        if( _isTargetCharacter == false )
+        if(_targetCharacter == null )
         {
             //L Stick
             float lsh = Input.GetAxis("L_Stick_H");

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -39,6 +40,8 @@ public static class Utility
 
 
     public const float PI = 3.1415926535f;
+
+    private static StringBuilder _sb = new StringBuilder();
 
     public static float Sin( float ang )
     {
@@ -167,6 +170,15 @@ public static class Utility
         {
             _gameTimeArray[i] = _gameSpeedArray[i] * time;
         }
+    }
+
+    public static string StringFormat(string format, params object[] args)
+    {
+        _sb.Clear();
+
+        _sb.AppendFormat(format, args);
+
+        return _sb.ToString();
     }
 
 #if UNITY_EDITOR

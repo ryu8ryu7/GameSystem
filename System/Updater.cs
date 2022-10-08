@@ -22,3 +22,4 @@ public class Updater : MonoBehaviour
 
     public virtual void AlterLateUpdate() { }
 }
+
