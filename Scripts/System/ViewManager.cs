@@ -21,7 +21,7 @@ public class ViewManager : Singleton<ViewManager>
         BootView,
 
         TitleView,
-        LocalMapView,
+        //LocalMapView,
 
         Max
     }
@@ -38,7 +38,7 @@ public class ViewManager : Singleton<ViewManager>
     {
         new ViewSet{ ViewId = ViewId.BootView, SceneId = SceneId.BootScene},
         new ViewSet{ ViewId = ViewId.TitleView, SceneId = SceneId.TitleScene},
-        new ViewSet{ ViewId = ViewId.LocalMapView, SceneId = SceneId.LocalMapScene, View3DType = typeof(LocalMapView3D), ViewControllerType = typeof( LocalMapViewController) },
+        //new ViewSet{ ViewId = ViewId.LocalMapView, SceneId = SceneId.LocalMapScene, View3DType = typeof(LocalMapView3D), ViewControllerType = typeof( LocalMapViewController) },
     };
 
     private ViewSet _currentViewSet = _viewSetArray[(int)ViewId.BootView];

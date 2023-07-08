@@ -56,12 +56,12 @@ public class GameSystem : SingletonMonoBehavior<GameSystem>
         UpdaterManager.CreateInstance();
         ResourceManager.CreateInstance();
         MasterDataManager.CreateInstance();
-        ClothManager.CreateInstance();
+        //ClothManager.CreateInstance();
         CameraManager.CreateInstance();
         LightManager.CreateInstance();
 
         MasterDataManager.Instance.LoadMaster();
-        ClothManager.Instance.Initialize();
+        //ClothManager.Instance.Initialize();
         CameraManager.Instance.Initialize();
         LightManager.Instance.Initialize();
 

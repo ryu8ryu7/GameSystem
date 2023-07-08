@@ -6,6 +6,6 @@ public class BootView : ViewBase
 {
     void Start()
     {
-        ViewManager.Instance.ChangeView(ViewManager.ViewId.LocalMapView);
+        ViewManager.Instance.ChangeView(ViewManager.ViewId.TitleView);
     }
 }
